@@ -13,6 +13,9 @@
   <ItemGroup>
     <ClCompile Include="Haircut.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdc++.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7EFA1735-BE73-4882-BA27-31E15B02A2CD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

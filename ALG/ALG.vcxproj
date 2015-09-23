@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Haircut.cpp" />
+    <ClInclude Include="stdc++.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdc++.h" />
+    <ClCompile Include="Logging.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7EFA1735-BE73-4882-BA27-31E15B02A2CD}</ProjectGuid>

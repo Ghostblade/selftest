@@ -15,6 +15,8 @@ int getBarber(ifstream& in){
 	}
 
 	//use a bisearch scheme to fine the ceil sum
+
+	//*****attention should be paied here use ull
 	unsigned long long r = 1e18, l = 0, mid=0, cursum=0;
 	while (l<r)
 	{

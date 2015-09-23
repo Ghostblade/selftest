@@ -5,138 +5,48 @@
 
 using namespace std;
 
-typedef struct A{
-	const int time;
-	const int id;
-	int elapse;
-	A(int _id, int _time) :id(_id), time(_time), elapse(_time){}
-}Barber;
-
-void swapMember(std::vector<Barber*>& ary, int i, int j){
-	Barber* tmp = ary[i];
-	ary[i] = ary[j];
-	ary[j] = tmp;
-}
-
-void buildHeap(std::vector<Barber*>& ary, int cnt){
-	cnt--;
-	if (cnt - ((cnt >> 1) << 1))
+int getBarber(ifstream& in){
+	int barber_cnt, queue_pos;
+	in >> barber_cnt >> queue_pos;
+	vector<int> barber_time(barber_cnt);
+	for (int i = 0; i < barber_cnt;++i)
 	{
-		int p = (cnt - 1)>>1;
-		if (ary[p]->elapse > ary[cnt]->elapse){
-			swapMember(ary, p, cnt);
-		}
-		cnt--;
+		in >> barber_time[i];
 	}
 
+	//use a bisearch scheme to fine the ceil sum
 
-	for (int i = cnt; i > 0;--i)
+	//*****attention should be paied here use ull
+	unsigned long long r = 1e18, l = 0, mid=0, cursum=0;
+	while (l<r)
 	{
-		if (i-((i>>1)<<1))
+		mid = (l + r) >> 1;
+		unsigned long long sum = 0;
+		for (int i = 0; i < barber_cnt;++i)
 		{
-			continue;
+			sum += mid / barber_time[i] + 1;
 		}
-		int l = i - 1;
-		int p = l >> 1;
-
-		int m = ary[i]->elapse < ary[l]->elapse ? i : l;
-		if (ary[m]->elapse<ary[p]->elapse)
+		if (sum<queue_pos)
 		{
-			swapMember(ary, p, m);
-		}
-	}
-}
-
-void adjustDown(std::vector<Barber*>& ary, int cnt){
-	int i = 0;
-	ary[0]->elapse += ary[0]->time;
-	while (true)
-	{
-		int j = -1;
-		int lc = (i << 1) + 1;
-		int rc = (i << 1) + 2;
-		if (lc>cnt-1)
-		{
-			break;
-		}
-
-		if ((ary[lc]->elapse<ary[i]->elapse)
-			||
-			(ary[lc]->elapse == ary[i]->elapse&&
-			ary[lc]->id < ary[i]->id))
-		{
-			j = lc;
-		}
-
-		if (rc>cnt-1)
-		{
-			if (j>0)
-			{
-				swapMember(ary, i, j);
-			}
-			break;
-		}
-
-		if ((ary[rc]->elapse<ary[i]->elapse)
-			||
-			(ary[rc]->elapse == ary[i]->elapse
-			&&ary[rc]->id<ary[i]->id))
-		{
-			if (j>0)
-			{
-				if ((ary[rc]->elapse < ary[lc]->elapse)
-					||
-					(ary[rc]->elapse == ary[lc]->elapse&&
-					ary[rc]->id < ary[lc]->id)){
-					j =rc;
-				}
-			}
-			else{
-				j = rc;
-			}
-		}
-
-		if (j<0)
-		{
-			break;
+			l = mid+1;
 		}
 		else{
-			swapMember(ary, i, j);
-			i = j;
+			r = mid;
 		}
 	}
-}
 
-int getBarber(ifstream& in){
-	int barber_num, cur_pos;
-	in >> barber_num;
-	in >> cur_pos;
-	if (cur_pos<=barber_num)
+	std::vector<int> cur_workingbarber;
+	for (int i = 0; i < barber_cnt;++i)
 	{
-		return cur_pos;
-	}
-	std::vector<Barber*> barber_ary(barber_num);
-	for (int i = 0; i < barber_num;++i)
-	{
-		int time;
-		in >> time;
-		barber_ary[i] = new Barber(i + 1, time);
+		cursum += r / barber_time[i] + 1;
+		if (r%barber_time[i]==0)
+		{
+			cur_workingbarber.push_back(i);
+		}
 	}
 
-	buildHeap(barber_ary, barber_num);
-	int heapsize = barber_num;
-	int curbarber;
-	do 
-	{
-		curbarber = barber_ary[0]->id;
-		adjustDown(barber_ary, barber_num);
-		heapsize++;
-	} while (heapsize<cur_pos);
-	for (int i = 0; i < barber_num;++i)
-	{
-		delete barber_ary[i];
-	}
-	return curbarber;
+	return cur_workingbarber[cur_workingbarber.size() - 1 - (cursum - queue_pos)] + 1;
+
 }
 
 
@@ -157,3 +67,5 @@ int main(){
 	in.close();
 	out.close();
 }
+
+
